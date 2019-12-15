@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <contextName>logback</contextName>
+
+    <property name="log.path" value="D:\\producer\\logs"/>
+    <!--<property name="log.path" value="//usr//local//producer//logs"/>-->
+
+    <!--【控制台日志】-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] -| %-5level %logger{40}-%msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <!-- 【错误日志】 一天产生一个日志文件，且只保存最近180天的日志文件,如果当前文件超过10M就进行分割-->
+    <appender name="ERROR_FILE_DAILY_ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/error.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] -| %-5level %logger{40} - %msg%n</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <maxHistory>180</maxHistory>
+            <fileNamePattern>${log.path}/error/%d.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 【警告日志】 一天产生一个日志文件，且只保存最近60天的日志文件,如果当前文件超过10M就进行分割-->
+    <appender name="WARN_FILE_DAILY_ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/warn.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] -| %-5level %logger{40} - %msg%n</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <maxHistory>60</maxHistory>
+            <fileNamePattern>${log.path}/warn/%d.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--【数据库日志】-->
+    <appender name="DBAppender" class="ch.qos.logback.classic.db.DBAppender">
+        <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+            <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+                <driverClass>com.mysql.jdbc.Driver</driverClass>
+                <jdbcUrl>jdbc:mysql://47.101.190.84:3306/yjx?autoReconnect=true&amp;failOverReadOnly=false&amp;allowMultiQueries=true&amp;useSSL=false</jdbcUrl>
+                <user>root</user>
+                <password>hj123456</password>
+                <!--initialPoolSize：初始化时获取三个连接，取值应在minPoolSize与maxPoolSize之间。 -->
+                <initialPoolSize>3</initialPoolSize>
+                <!--minPoolSize 最小连接数-->
+                <minPoolSize>1</minPoolSize>
+                <!--maxPoolSize：连接池中保留的最大连接数。 -->
+                <maxPoolSize>10</maxPoolSize>
+                <!--maxIdleTime：最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。-->
+                <maxIdleTime>60</maxIdleTime>
+                <!--maxStatements：最大链接数。-->
+                <maxStatements>100</maxStatements>
+                <!--idleConnectionTestPeriod：每60秒检查所有连接池中的空闲连接。-->
+                <idleConnectionTestPeriod>60</idleConnectionTestPeriod>
+            </dataSource>
+        </connectionSource>
+        <filter class="com.dw.web.logback.LogLevelFilter">
+            <greaterThan>warn</greaterThan>
+        </filter>
+    </appender>
+
+
+    <logger name="com.xxx" level="warn"/>
+
+    <logger name="com.dw.web.listener.SpringStopListener" level="info" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="com.dw.web.listener.SpringStartListener" level="info" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+
+    <root>
+        <level value="error"/>
+        <appender-ref ref="ERROR_FILE_DAILY_ROLLING"/>
+        <appender-ref ref="WARN_FILE_DAILY_ROLLING"/>
+        <appender-ref ref="DBAppender"/>
+    </root>
+
+</configuration>

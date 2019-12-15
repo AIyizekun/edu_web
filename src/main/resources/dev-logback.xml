@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <contextName>logback</contextName>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] -| %-5level %logger{40}-%msg%n</Pattern>
+            <!--<charset>UTF-8</charset>-->
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="STDOUT_SIMPLE" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{HH:mm:ss.SSS} %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT_ERROR" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.err</target>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] -| %-5level %logger{40} -%msg%n</Pattern>
+            <!--<charset>utf-8</charset>-->
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <logger name="com.dw" level="debug"/>
+
+    <logger name="com.dw.web.interceptor.ControllerTraceInterceptor" level="debug" additivity="false">
+        <appender-ref ref="STDOUT_SIMPLE"/>
+    </logger>
+
+    <root>
+        <level value="warn"/>
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="STDOUT_ERROR"/>
+    </root>
+</configuration>

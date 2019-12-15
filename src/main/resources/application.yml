@@ -1,0 +1,99 @@
+server:
+  port: 1160
+  tomcat:
+    uri-encoding: UTF-8
+    #    max-http-post-size:
+    #    accept-count:   # 线程数达到最大时，接受排队的请求个数，默认值为100
+    #    max-connections:
+    #    max-threads:  #最大线程数，即同时处理的任务个数，默认值为200
+  servlet:
+    context-path: /edu_web
+    session:
+      timeout: 300s
+
+spring:
+  profiles:
+    active: dev
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  messages:
+    encoding: UTF-8
+  aop:
+    proxy-target-class: true
+    auto: true
+  mvc:
+    favicon:
+      enabled: false
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 2MB
+      enabled: true
+  thymeleaf:
+    cache: true
+    encoding: UTF-8
+    suffix: .html
+    servlet:
+      content-type: text/html
+  cache:
+    type: redis
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: shutdown
+
+mybatis-plus:
+  # 如果是放在src/main/java目录下 classpath:/com/yourpackage/*/mapper/*Mapper.xml
+  # 如果是放在resource目录 classpath:/mapper/*.xml
+  mapper-locations: classpath:/mapper/*.xml
+  #实体扫描，多个package用逗号或者分号分隔
+#  typeAliasesPackage: com.dw.entity
+  global-config:
+    # 数据库相关配置
+    db-config:
+    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+      id-type: 0
+    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+      field-strategy: 2
+    #驼峰下划线转换
+      table-underline: true
+    #mp2.3+ 全局表前缀 mp_
+    #table-prefix: mp_
+    #刷新mapper 调试神器
+      refresh-mapper: true
+    #数据库大写下划线转换
+    #capital-mode: true
+    # Sequence序列接口实现类配置
+    #key-generator: com.baomidou.mybatisplus.incrementer.OracleKeyGenerator
+    #逻辑删除配置（下面3个配置）
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
+    #自定义填充策略接口实现
+    #meta-object-handler: com.baomidou.springboot.MyMetaObjectHandler
+  #枚举类型转换handler扫描，多个package用逗号或者分号分隔(该配置不支持正则路径)
+  type-handlers-package: com.dw.handler
+  configuration:
+    #配置返回数据库(column下划线命名&&返回java实体是驼峰命名)，自动匹配无需as（没开启这个，SQL需要写as： select user_id as userId）
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    #配置JdbcTypeForNull, oracle数据库必须配置
+    jdbc-type-for-null: 'null'
+#    default-enum-type-handler: com.dw.dao.handlers.UsabilityHandler
+
+#snowflake:
+#  datacenter-id: 1 #数据中心
+#  machine-id: 1 #机器标识
+#开启mybatis的sql日志
+logging:
+  level:
+    com.jack.mybatisplus_study1: debug
+
+
